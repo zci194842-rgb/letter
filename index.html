@@ -5,9 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>这封信会在你需要的时候找到你</title>
-
   <style>
-    /* === Font faces === */
     @font-face {
       font-family: 'Lora';
       src: url('./_shared/fonts/Lora-Regular.ttf') format('truetype');
@@ -31,22 +29,24 @@
       font-style: italic;
     }
   </style>
-
   <style>
-    /* === Theme CSS variables === */
     :root {
-      --bg: #f5f4f2;
-      --bg2: #eae8e5;
-      --ink: #2c2c2c;
-      --muted: #8a8680;
-      --rule: #d4d0cb;
-      --accent: #6b6560;
-      --accent2: #a09890;
-      --font: 'Lora', 'Noto Serif SC', 'STSong', serif;
+      --bg: #f0ecee;
+      --bg2: #e8e0e4;
+      --ink: #3a3538;
+      --muted: #9b8e94;
+      --rule: #d5cdd2;
+      --accent: #b8a0a8;
+      --accent2: #c4b0b8;
+      --pink: #e0c8ce;
+      --pink-light: #f0dde2;
+      --pink-glow: rgba(224, 200, 206, 0.4);
+      --glass: rgba(255, 255, 255, 0.42);
+      --glass-border: rgba(255, 255, 255, 0.55);
+      --glass-shadow: rgba(0, 0, 0, 0.03);
+      --font: 'Lora', 'Noto Serif SC', 'STSong', 'SimSun', serif;
       --max: 720px;
     }
-
-    /* === Base styles === */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; scroll-behavior: smooth; }
     body {
@@ -56,463 +56,959 @@
       line-height: 1.9;
       overflow-x: hidden;
       min-height: 100vh;
+      padding-bottom: 56px;
     }
 
-    /* === Polka dot pattern background === */
+    /* === POLKA DOT TEXTURE === */
     body::before {
       content: '';
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-image: radial-gradient(circle, var(--rule) 1px, transparent 1px);
-      background-size: 24px 24px;
-      opacity: 0.35;
+      background-image: radial-gradient(circle, var(--pink) 0.6px, transparent 0.6px);
+      background-size: 20px 20px;
+      opacity: 0.25;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* === Lace border decoration === */
+    /* === PINK-GRAY GRADIENT GLOW === */
     body::after {
       content: '';
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      border: 20px solid transparent;
-      background:
-        linear-gradient(var(--bg), var(--bg)) padding-box,
-        repeating-linear-gradient(
-          90deg,
-          transparent,
-          transparent 8px,
-          var(--rule) 8px,
-          var(--rule) 10px,
-          transparent 10px,
-          transparent 18px,
-          var(--rule) 18px,
-          var(--rule) 20px
-        ) border-box;
+      top: -30%; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse at center, var(--pink-glow) 0%, rgba(240,220,222,0.15) 30%, transparent 70%);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.5;
+      opacity: 0.8;
     }
 
-    /* === Cover Section === */
+    /* ======================== */
+    /* === COVER SECTION ====== */
+    /* ======================== */
     .cover-section {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       padding: 2rem;
       cursor: pointer;
       transition: opacity 0.8s ease;
     }
-
     .cover-section.hidden {
-      opacity: 0;
-      pointer-events: none;
-      position: absolute;
-      top: 0; left: 0; right: 0;
+      opacity: 0; pointer-events: none;
+      position: absolute; top: 0; left: 0; right: 0;
     }
 
-    .envelope-container {
+    .cover-card {
       position: relative;
-      width: 320px;
-      height: 420px;
-      margin-bottom: 2.5rem;
-      animation: floatEnvelope 4s ease-in-out infinite;
-    }
-
-    @keyframes floatEnvelope {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    .envelope-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: saturate(0.2) brightness(1.05);
-      border-radius: 16px;
-    }
-
-    /* Frosted glass card behind envelope */
-    .envelope-glass {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 340px;
-      height: 440px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-      z-index: -1;
-    }
-
-    .cover-title {
-      font-size: 1.25rem;
-      font-weight: 400;
-      color: var(--muted);
-      letter-spacing: 0.15em;
-      text-align: center;
-      line-height: 2;
-      opacity: 0;
-      animation: fadeInUp 1.5s ease 0.5s forwards;
-    }
-
-    .cover-hint {
-      font-size: 0.8rem;
-      color: var(--accent2);
-      letter-spacing: 0.1em;
-      margin-top: 1.5rem;
-      opacity: 0;
-      animation: fadeInUp 1.5s ease 1.2s forwards, pulse 2.5s ease-in-out 2.7s infinite;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    /* === Letter Section === */
-    .letter-section {
-      position: relative;
-      z-index: 1;
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 3rem 2rem 4rem;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s;
-      pointer-events: none;
-    }
-
-    .letter-section.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    /* Letter paper card */
-    .letter-paper {
-      background: rgba(255, 255, 255, 0.55);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-      padding: 3rem 2.5rem;
-      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(240,220,222,0.3) 50%, rgba(255,255,255,0.4) 100%);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      box-shadow:
+        0 8px 40px var(--glass-shadow),
+        0 0 80px var(--pink-glow),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+      padding: 3.5rem 3rem 3rem;
+      max-width: 420px; width: 100%;
       overflow: hidden;
     }
 
-    /* Lace corner decorations */
-    .letter-paper::before,
-    .letter-paper::after {
+    /* Lace wave borders — pink tinted */
+    .cover-card::before {
       content: '';
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      opacity: 0.2;
-      pointer-events: none;
+      position: absolute; top: -1px; left: 0; right: 0;
+      height: 28px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='28' viewBox='0 0 40 28'%3E%3Cpath d='M0 28 C5 14, 10 0, 20 0 S35 14, 40 28' fill='none' stroke='%23c4b0b8' stroke-width='0.7'/%3E%3C/svg%3E") repeat-x;
+      background-size: 40px 28px;
+      opacity: 0.45;
+    }
+    .cover-card::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 28px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='28' viewBox='0 0 40 28'%3E%3Cpath d='M0 0 C5 14, 10 28, 20 28 S35 14, 40 0' fill='none' stroke='%23c4b0b8' stroke-width='0.7'/%3E%3C/svg%3E") repeat-x;
+      background-size: 40px 28px;
+      opacity: 0.45;
     }
 
-    .letter-paper::before {
-      top: 12px;
-      left: 12px;
-      border-top: 2px solid var(--accent);
-      border-left: 2px solid var(--accent);
-      border-radius: 12px 0 0 0;
-      background:
-        radial-gradient(circle at 10px 10px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 30px 10px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 50px 10px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 10px 30px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 30px 30px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 50px 30px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 10px 50px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 30px 50px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 50px 50px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px);
+    .cover-lace-left, .cover-lace-right {
+      position: absolute; top: 28px; bottom: 28px;
+      width: 14px; pointer-events: none; opacity: 0.25;
+    }
+    .cover-lace-left {
+      left: 6px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='28' viewBox='0 0 14 28'%3E%3Ccircle cx='7' cy='7' r='5' fill='none' stroke='%23c4b0b8' stroke-width='0.5'/%3E%3Ccircle cx='7' cy='21' r='5' fill='none' stroke='%23c4b0b8' stroke-width='0.5'/%3E%3C/svg%3E") repeat-y;
+      background-size: 14px 28px;
+    }
+    .cover-lace-right {
+      right: 6px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='28' viewBox='0 0 14 28'%3E%3Ccircle cx='7' cy='7' r='5' fill='none' stroke='%23c4b0b8' stroke-width='0.5'/%3E%3Ccircle cx='7' cy='21' r='5' fill='none' stroke='%23c4b0b8' stroke-width='0.5'/%3E%3C/svg%3E") repeat-y;
+      background-size: 14px 28px;
     }
 
-    .letter-paper::after {
-      bottom: 12px;
-      right: 12px;
-      border-bottom: 2px solid var(--accent);
-      border-right: 2px solid var(--accent);
-      border-radius: 0 0 12px 0;
-      background:
-        radial-gradient(circle at 70px 70px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 50px 70px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 30px 70px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 70px 50px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 50px 50px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 30px 50px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 70px 30px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 50px 30px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px),
-        radial-gradient(circle at 30px 30px, transparent 6px, var(--accent) 6px, var(--accent) 7px, transparent 7px);
+    .cover-label {
+      font-size: 0.6rem; letter-spacing: 0.4em;
+      color: var(--accent2); text-transform: uppercase;
+      text-align: center; margin-bottom: 1.8rem;
+      opacity: 0; animation: fadeIn 1.5s ease 0.3s forwards;
     }
 
-    .letter-greeting {
-      font-size: 1.1rem;
-      color: var(--muted);
-      margin-bottom: 2rem;
-      font-style: italic;
-      opacity: 0;
-      animation: letterReveal 0.8s ease 0.8s forwards;
+    .cover-divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeIn 1.5s ease 0.5s forwards;
+    }
+    .cover-divider::before, .cover-divider::after {
+      content: ''; width: 40px; height: 1px; background: var(--rule);
+    }
+    .cover-divider-diamond {
+      width: 6px; height: 6px;
+      border: 1px solid var(--rule); transform: rotate(45deg);
     }
 
-    .letter-body p {
-      font-size: 1rem;
-      color: var(--ink);
-      margin-bottom: 1.5rem;
-      text-indent: 2em;
-      opacity: 0;
-      transform: translateY(10px);
+    .cover-title-group { text-align: center; margin-bottom: 2rem; }
+    .cover-title-group .line {
+      display: block; opacity: 0; transform: translateY(15px);
+    }
+    .cover-title-group .line-1 {
+      font-size: 1.9rem; font-weight: 700; color: var(--ink);
+      margin-bottom: 0.1em; letter-spacing: 0.05em;
+      animation: fadeInUp 1s ease 0.6s forwards;
+    }
+    .cover-title-group .line-2 {
+      font-size: 1rem; font-weight: 400; color: var(--accent2);
+      margin-bottom: 0.1em; letter-spacing: 0.12em;
+      animation: fadeInUp 1s ease 0.85s forwards;
+    }
+    .cover-title-group .line-3 {
+      font-size: 1.9rem; font-weight: 700; color: var(--ink);
+      letter-spacing: 0.05em;
+      animation: fadeInUp 1s ease 1.1s forwards;
     }
 
-    .letter-body p:nth-child(1) { animation: letterReveal 0.8s ease 1.2s forwards; }
-    .letter-body p:nth-child(2) { animation: letterReveal 0.8s ease 1.6s forwards; }
-    .letter-body p:nth-child(3) { animation: letterReveal 0.8s ease 2.0s forwards; }
-    .letter-body p:nth-child(4) { animation: letterReveal 0.8s ease 2.4s forwards; }
-    .letter-body p:nth-child(5) { animation: letterReveal 0.8s ease 2.8s forwards; }
-    .letter-body p:nth-child(6) { animation: letterReveal 0.8s ease 3.2s forwards; }
-    .letter-body p:nth-child(7) { animation: letterReveal 0.8s ease 3.6s forwards; }
-    .letter-body p:nth-child(8) { animation: letterReveal 0.8s ease 4.0s forwards; }
-    .letter-body p:nth-child(9) { animation: letterReveal 0.8s ease 4.4s forwards; }
-    .letter-body p:nth-child(10) { animation: letterReveal 0.8s ease 4.8s forwards; }
-
-    @keyframes letterReveal {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .cover-subtitle {
+      font-size: 0.78rem; color: var(--muted); letter-spacing: 0.1em;
+      text-align: center; margin-bottom: 2.8rem;
+      opacity: 0; animation: fadeInUp 1s ease 1.3s forwards;
     }
 
-    .letter-signature {
-      text-align: right;
-      margin-top: 2.5rem;
-      font-style: italic;
-      color: var(--accent);
-      font-size: 1.05rem;
-      opacity: 0;
-      animation: letterReveal 0.8s ease 5.2s forwards;
+    .compass-container {
+      position: relative; width: 130px; height: 130px;
+      margin: 0 auto 2rem;
+      opacity: 0; animation: fadeIn 1.5s ease 1.5s forwards;
+    }
+    .compass-ring {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 1px solid var(--rule); border-radius: 50%;
+    }
+    .compass-ring-outer {
+      position: absolute; top: -8px; left: -8px;
+      width: calc(100% + 16px); height: calc(100% + 16px);
+      border: 1px dashed var(--rule); border-radius: 50%; opacity: 0.5;
+    }
+    .compass-ticks { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .compass-tick {
+      position: absolute; width: 1px; height: 7px;
+      background: var(--rule); top: 4px; left: 50%; transform-origin: 0 61px;
+    }
+    .compass-tick.major { height: 11px; background: var(--muted); width: 1.2px; }
+    .compass-label {
+      position: absolute; font-size: 0.5rem; letter-spacing: 0.15em;
+      color: var(--accent2); font-weight: 400;
+    }
+    .compass-label.n { top: 13px; left: 50%; transform: translateX(-50%); }
+    .compass-label.s { bottom: 13px; left: 50%; transform: translateX(-50%); }
+    .compass-label.e { right: 10px; top: 50%; transform: translateY(-50%); }
+    .compass-label.w { left: 10px; top: 50%; transform: translateY(-50%); }
+    .compass-icon {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, var(--ink) 0%, #4a3840 100%);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(58,53,56,0.2), 0 0 30px var(--pink-glow);
+    }
+    .compass-icon svg { width: 20px; height: 20px; }
+
+    .cover-cta-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px;
+      opacity: 0; animation: fadeIn 1.5s ease 1.8s forwards;
+    }
+    .cover-cta-line { width: 24px; height: 1px; background: var(--rule); }
+    .cover-cta {
+      font-size: 0.7rem; letter-spacing: 0.3em; color: var(--muted);
+      animation: pulse 2.5s ease-in-out 3.3s infinite;
     }
 
-    .letter-date {
-      text-align: right;
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 0.3rem;
-      opacity: 0;
-      animation: letterReveal 0.8s ease 5.6s forwards;
+    .cover-footer {
+      display: flex; justify-content: space-between;
+      margin-top: 2rem; padding-top: 1rem;
+      border-top: 1px solid rgba(212,208,203,0.4);
+      font-size: 0.55rem; letter-spacing: 0.2em; color: var(--rule);
+      opacity: 0; animation: fadeIn 1.5s ease 2.1s forwards;
     }
 
-    /* === Envelope opening animation overlay === */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* ======================== */
+    /* === OPENING ANIMATION == */
+    /* ======================== */
     .envelope-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       background: var(--bg);
-      opacity: 0;
-      pointer-events: none;
+      opacity: 0; pointer-events: none;
       transition: opacity 0.6s ease;
     }
-
-    .envelope-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .envelope-overlay.active { opacity: 1; pointer-events: auto; }
+    .envelope-overlay.fadeout { opacity: 0; transition: opacity 1s ease; }
 
     .opening-envelope {
-      width: 280px;
-      height: 360px;
-      position: relative;
-      perspective: 800px;
+      width: 280px; height: 360px;
+      position: relative; perspective: 800px;
     }
-
-    .opening-envelope .envelope-body {
-      width: 100%;
-      height: 100%;
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
+    .opening-envelope .env-body {
+      width: 100%; height: 100%;
+      border-radius: 20px; overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(240,220,222,0.3) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 32px var(--glass-shadow), 0 0 60px var(--pink-glow);
     }
-
-    .opening-envelope .envelope-body img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(0.2) brightness(1.05);
+    .opening-envelope .env-body span {
+      font-size: 0.6rem; letter-spacing: 0.35em;
+      color: var(--accent2); text-transform: uppercase;
     }
-
-    /* Envelope flap */
-    .envelope-flap {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 50%;
-      background: linear-gradient(180deg, rgba(200,195,188,0.9) 0%, rgba(220,215,208,0.7) 100%);
-      border-radius: 16px 16px 0 0;
+    .env-flap {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 50%;
+      background: linear-gradient(180deg, rgba(224,200,206,0.7) 0%, rgba(240,220,222,0.4) 100%);
+      border-radius: 20px 20px 0 0;
       transform-origin: top center;
       transform: rotateX(0deg);
       transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 2;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.35);
       border-bottom: none;
     }
-
-    .envelope-flap::after {
+    .env-flap::after {
       content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
+      position: absolute; bottom: 0; left: 50%;
       transform: translateX(-50%);
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
       border-left: 140px solid transparent;
       border-right: 140px solid transparent;
-      border-top: 60px solid rgba(200,195,188,0.9);
+      border-top: 60px solid rgba(224,200,206,0.7);
     }
+    .envelope-overlay.active .env-flap { transform: rotateX(-180deg); }
 
-    .envelope-overlay.active .envelope-flap {
-      transform: rotateX(-180deg);
-    }
-
-    /* Letter sliding out */
     .letter-slide {
-      position: absolute;
-      top: 20%;
-      left: 10%;
-      width: 80%;
-      height: 70%;
+      position: absolute; top: 20%; left: 10%;
+      width: 80%; height: 70%;
       background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(8px);
-      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.5);
       transform: translateY(0);
       transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.8s;
       z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .letter-slide span {
+      color: var(--muted); font-size: 0.85rem;
+      font-style: italic; letter-spacing: 0.05em;
+    }
+    .envelope-overlay.active .letter-slide { transform: translateY(-120%); }
+
+    /* ====================== */
+    /* === LETTER SECTION === */
+    /* ====================== */
+    .letter-section {
+      position: relative; z-index: 1;
+      max-width: var(--max); margin: 0 auto;
+      padding: 3rem 2rem 6rem;
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s;
+      pointer-events: none;
+    }
+    .letter-section.visible {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
     }
 
-    .letter-slide span {
+    .letter-paper {
+      background: linear-gradient(160deg, rgba(255,255,255,0.5) 0%, rgba(240,220,222,0.25) 40%, rgba(255,255,255,0.45) 100%);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 24px var(--glass-shadow), 0 0 60px var(--pink-glow), inset 0 1px 0 rgba(255,255,255,0.7);
+      padding: 3rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .letter-paper::before {
+      content: '';
+      position: absolute; top: -1px; left: 0; right: 0;
+      height: 20px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20' viewBox='0 0 40 20'%3E%3Cpath d='M0 20 C5 10, 10 0, 20 0 S35 10, 40 20' fill='none' stroke='%23c4b0b8' stroke-width='0.5'/%3E%3C/svg%3E") repeat-x;
+      background-size: 40px 20px; opacity: 0.35;
+    }
+    .letter-paper::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 20px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20' viewBox='0 0 40 20'%3E%3Cpath d='M0 0 C5 10, 10 20, 20 20 S35 10, 40 0' fill='none' stroke='%23c4b0b8' stroke-width='0.5'/%3E%3C/svg%3E") repeat-x;
+      background-size: 40px 20px; opacity: 0.35;
+    }
+
+    .lace-corner {
+      position: absolute; width: 56px; height: 56px;
+      opacity: 0.1; pointer-events: none;
+    }
+
+    .letter-greeting {
+      font-size: 1.1rem; color: var(--muted);
+      margin-bottom: 2rem; font-style: italic;
+      opacity: 0;
+    }
+    .letter-greeting.show { opacity: 1; transition: opacity 0.8s ease; }
+
+    .letter-body p {
+      font-size: 1rem; color: var(--ink);
+      margin-bottom: 1.5rem; text-indent: 2em;
+    }
+
+    .letter-signature {
+      text-align: right; margin-top: 2.5rem;
+      font-style: italic; color: var(--accent); font-size: 1.05rem;
+      opacity: 0;
+    }
+    .letter-signature.show { opacity: 1; transition: opacity 0.8s ease; }
+    .letter-date {
+      text-align: right; color: var(--muted); font-size: 0.85rem;
+      margin-top: 0.3rem; opacity: 0;
+    }
+    .letter-date.show { opacity: 1; transition: opacity 0.8s ease; }
+
+    /* === Back to cover button === */
+    .back-btn-wrap {
+      text-align: center; margin-top: 2.5rem;
+      opacity: 0;
+    }
+    .back-btn-wrap.show { opacity: 1; transition: opacity 0.8s ease; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.6rem 1.6rem;
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      font-family: var(--font);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
       color: var(--muted);
-      font-size: 0.85rem;
-      font-style: italic;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.6);
+      color: var(--ink);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .back-btn svg { width: 14px; height: 14px; }
+
+    /* === BOTTOM NAV === */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex; justify-content: space-around; align-items: center;
+      background: rgba(240,236,238,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-family: var(--font);
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      padding: 0.3rem 0.8rem;
+      transition: color 0.3s ease;
+    }
+    .nav-item svg { width: 20px; height: 20px; }
+    .nav-item.active { color: var(--ink); }
+
+    /* === MUSIC PLAYER === */
+    .music-player {
+      position: fixed; bottom: 56px; left: 0; right: 0;
+      z-index: 199;
+      background: rgba(240,236,238,0.92);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--glass-border);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .music-player.open { transform: translateY(0); }
+    .music-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0.6rem 1rem;
+      cursor: pointer; font-size: 0.75rem; color: var(--muted);
+    }
+    .music-icon { font-size: 1rem; }
+    .music-label { flex: 1; letter-spacing: 0.1em; }
+    .music-toggle { font-size: 0.65rem; letter-spacing: 0.1em; }
+    .music-iframe-wrap {
+      display: flex; justify-content: center;
+      padding: 0 1rem 0.8rem;
+    }
+    .music-iframe-wrap iframe {
+      border-radius: 12px;
+      max-width: 100%;
+    }
+    .music-import {
+      padding: 0 1rem 0.8rem;
+    }
+    .music-import-row {
+      display: flex; gap: 0.5rem;
+    }
+    .music-url-input {
+      flex: 1;
+      background: rgba(255,255,255,0.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.5rem 0.8rem;
+      font-family: var(--font);
+      font-size: 0.75rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .music-url-input::placeholder { color: var(--rule); }
+    .music-url-input:focus { border-color: var(--accent2); }
+    .music-import-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .music-import-hint {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      padding-left: 0.2rem;
+      letter-spacing: 0.05em;
+      min-height: 1em;
+    }
+
+    /* === WRITE & BOTTLE SECTIONS === */
+    .write-section, .bottle-section {
+      position: relative; z-index: 1;
+      max-width: var(--max); margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+      display: none;
+    }
+    .write-section.active, .bottle-section.active { display: block; }
+
+    .glass-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.48) 0%, rgba(240,220,222,0.28) 50%, rgba(255,255,255,0.4) 100%);
+  backdrop-filter: blur(28px);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px var(--glass-shadow), 0 0 50px var(--pink-glow), inset 0 1px 0 rgba(255,255,255,0.65);
+  padding: 2.5rem 2rem;
+}
+    .section-title {
+      font-size: 1.3rem; font-weight: 700; color: var(--ink);
+      text-align: center; margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+    .section-desc {
+      font-size: 0.8rem; color: var(--muted); text-align: center;
+      margin-bottom: 2rem; letter-spacing: 0.08em;
+    }
+
+    /* Write textarea */
+    textarea {
+      width: 100%; min-height: 160px;
+      background: rgba(255,255,255,0.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      font-family: var(--font);
+      font-size: 0.95rem; color: var(--ink);
+      line-height: 1.8;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    textarea::placeholder { color: var(--rule); }
+    textarea:focus { border-color: var(--accent2); }
+
+    .write-actions { text-align: center; margin-top: 1.5rem; }
+    .write-sent {
+      text-align: center; margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.3);
+      border-radius: 12px;
+      font-size: 0.85rem; color: var(--accent);
       letter-spacing: 0.05em;
     }
 
-    .envelope-overlay.active .letter-slide {
-      transform: translateY(-120%);
+    /* Glass button */
+    .glass-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.65rem 1.8rem;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .glass-btn:hover {
+      background: rgba(255,255,255,0.6);
+      color: var(--ink);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
 
-    /* Fade out overlay */
-    .envelope-overlay.fadeout {
-      opacity: 0;
-      transition: opacity 1s ease;
+    /* Bottle */
+    .bottle-actions {
+      display: flex; gap: 1rem; justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    /* === RIVER SCENE === */
+    .river-scene {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      margin-bottom: 1.8rem;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(200,190,195,0.15) 0%, rgba(180,170,178,0.25) 40%, rgba(160,150,160,0.3) 100%);
+    }
+    .river-water {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 100%;
+    }
+    .river-wave {
+      position: absolute;
+      left: -100%;
+      width: 300%;
+      height: 100%;
+    }
+    .river-wave-1 {
+      bottom: 0;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M0 30 Q25 10 50 30 T100 30 T150 30 T200 30 V60 H0Z' fill='rgba(180,170,178,0.18)'/%3E%3C/svg%3E") repeat-x;
+      background-size: 200px 60px;
+      animation: riverFlow1 8s linear infinite;
+    }
+    .river-wave-2 {
+      bottom: 10px;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 50'%3E%3Cpath d='M0 25 Q20 8 40 25 T80 25 T120 25 T160 25 V50 H0Z' fill='rgba(196,176,184,0.15)'/%3E%3C/svg%3E") repeat-x;
+      background-size: 160px 50px;
+      animation: riverFlow2 6s linear infinite;
+    }
+    .river-wave-3 {
+      bottom: 20px;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'%3E%3Cpath d='M0 20 Q15 6 30 20 T60 20 T90 20 T120 20 V40 H0Z' fill='rgba(210,195,205,0.12)'/%3E%3C/svg%3E") repeat-x;
+      background-size: 120px 40px;
+      animation: riverFlow3 10s linear infinite;
+    }
+    @keyframes riverFlow1 {
+      from { transform: translateX(0); }
+      to { transform: translateX(33.33%); }
+    }
+    @keyframes riverFlow2 {
+      from { transform: translateX(0); }
+      to { transform: translateX(33.33%); }
+    }
+    @keyframes riverFlow3 {
+      from { transform: translateX(0); }
+      to { transform: translateX(33.33%); }
+    }
+
+    /* Water surface sparkles */
+    .river-surface {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+    }
+    .river-sparkle {
+      position: absolute;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      animation: sparkle 3s ease-in-out infinite;
+    }
+    .r-sparkle-1 { top: 25%; left: 15%; animation-delay: 0s; }
+    .r-sparkle-2 { top: 40%; left: 45%; animation-delay: 0.8s; }
+    .r-sparkle-3 { top: 55%; left: 70%; animation-delay: 1.6s; }
+    .r-sparkle-4 { top: 30%; left: 85%; animation-delay: 2.2s; }
+    .r-sparkle-5 { top: 65%; left: 30%; animation-delay: 0.4s; }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Floating mini bottles */
+    .river-bottles {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+    }
+    .mini-bottle {
+      position: absolute;
+      width: 18px; height: 24px;
+      opacity: 0.6;
+    }
+    .mini-bottle svg {
+      width: 100%; height: 100%;
+    }
+    .mb-1 {
+      top: 20%; left: -30px;
+      animation: floatBottle1 12s linear infinite;
+    }
+    .mb-2 {
+      top: 50%; left: -30px;
+      animation: floatBottle2 16s linear infinite;
+      animation-delay: -5s;
+    }
+    .mb-3 {
+      top: 35%; left: -30px;
+      animation: floatBottle3 20s linear infinite;
+      animation-delay: -10s;
+    }
+    @keyframes floatBottle1 {
+      0% { left: -30px; transform: translateY(0) rotate(-5deg); }
+      25% { transform: translateY(-6px) rotate(3deg); }
+      50% { transform: translateY(2px) rotate(-2deg); }
+      75% { transform: translateY(-4px) rotate(4deg); }
+      100% { left: calc(100% + 30px); transform: translateY(0) rotate(-5deg); }
+    }
+    @keyframes floatBottle2 {
+      0% { left: -30px; transform: translateY(0) rotate(3deg); }
+      25% { transform: translateY(-8px) rotate(-4deg); }
+      50% { transform: translateY(3px) rotate(2deg); }
+      75% { transform: translateY(-5px) rotate(-3deg); }
+      100% { left: calc(100% + 30px); transform: translateY(0) rotate(3deg); }
+    }
+    @keyframes floatBottle3 {
+      0% { left: -30px; transform: translateY(0) rotate(-3deg); }
+      25% { transform: translateY(-5px) rotate(5deg); }
+      50% { transform: translateY(4px) rotate(-2deg); }
+      75% { transform: translateY(-7px) rotate(3deg); }
+      100% { left: calc(100% + 30px); transform: translateY(0) rotate(-3deg); }
+    }
+    .bottle-content {
+      background: rgba(255,255,255,0.3);
+      border-radius: 16px;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--ink);
+      line-height: 1.8;
+      border: 1px solid var(--glass-border);
+      animation: fadeInUp 0.5s ease;
+    }
+    .bottle-content .bottle-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 1rem;
+      letter-spacing: 0.1em;
+    }
+    .bottle-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 2rem 0;
     }
 
     /* === Responsive === */
     @media (max-width: 600px) {
-      .envelope-container {
-        width: 240px;
-        height: 320px;
-      }
-      .envelope-glass {
-        width: 260px;
-        height: 340px;
-      }
-      .letter-paper {
-        padding: 2rem 1.5rem;
-      }
-      .cover-title {
-        font-size: 1.05rem;
-      }
+      .cover-card { padding: 2.5rem 2rem 2rem; border-radius: 24px; }
+      .cover-title-group .line-1,
+      .cover-title-group .line-3 { font-size: 1.45rem; }
+      .cover-title-group .line-2 { font-size: 0.88rem; }
+      .compass-container { width: 105px; height: 105px; }
+      .compass-tick { transform-origin: 0 48.5px; }
+      .compass-ring-outer { top: -6px; left: -6px; }
+      .compass-label.n { top: 10px; }
+      .compass-label.s { bottom: 10px; }
+      .compass-label.e { right: 7px; }
+      .compass-label.w { left: 7px; }
+      .compass-icon { width: 38px; height: 38px; border-radius: 11px; }
+      .compass-icon svg { width: 16px; height: 16px; }
+      .letter-paper { padding: 2rem 1.5rem; border-radius: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cover Section -->
+  <!-- ======== COVER ======== -->
   <div class="cover-section" id="coverSection" onclick="openLetter()">
-    <div class="envelope-container">
-      <div class="envelope-glass"></div>
-      <img class="envelope-img" src="assets/envelope_cover_1024x1024.jpg" alt="信封">
+    <div class="cover-card">
+      <div class="cover-lace-left"></div>
+      <div class="cover-lace-right"></div>
+
+      <span class="cover-label">CONFIDENTIAL &amp; PERSONAL</span>
+
+      <div class="cover-divider">
+        <div class="cover-divider-diamond"></div>
+      </div>
+
+      <div class="cover-title-group" id="coverTitleGroup">
+        <span class="line line-1" id="coverLine1">这封信</span>
+        <span class="line line-2" id="coverLine2">会在你需要的时候</span>
+        <span class="line line-3" id="coverLine3">找到你</span>
+      </div>
+
+      <p class="cover-subtitle" id="coverSubtitle">在你感到委屈、迷茫、或需要力量的时刻</p>
+
+      <div class="compass-container">
+        <div class="compass-ring-outer"></div>
+        <div class="compass-ring"></div>
+        <div class="compass-ticks">
+          <div class="compass-tick" style="transform: rotate(0deg)"></div>
+          <div class="compass-tick" style="transform: rotate(30deg)"></div>
+          <div class="compass-tick" style="transform: rotate(60deg)"></div>
+          <div class="compass-tick major" style="transform: rotate(90deg)"></div>
+          <div class="compass-tick" style="transform: rotate(120deg)"></div>
+          <div class="compass-tick" style="transform: rotate(150deg)"></div>
+          <div class="compass-tick major" style="transform: rotate(180deg)"></div>
+          <div class="compass-tick" style="transform: rotate(210deg)"></div>
+          <div class="compass-tick" style="transform: rotate(240deg)"></div>
+          <div class="compass-tick major" style="transform: rotate(270deg)"></div>
+          <div class="compass-tick" style="transform: rotate(300deg)"></div>
+          <div class="compass-tick" style="transform: rotate(330deg)"></div>
+        </div>
+        <span class="compass-label n">N</span>
+        <span class="compass-label s">S</span>
+        <span class="compass-label e">E</span>
+        <span class="compass-label w">W</span>
+        <div class="compass-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="5" width="20" height="14" rx="2" stroke="white" stroke-width="1.5"/>
+            <path d="M2 7L12 14L22 7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="cover-cta-wrap">
+        <span class="cover-cta-line"></span>
+        <span class="cover-cta">点击启封</span>
+        <span class="cover-cta-line"></span>
+      </div>
+
+      <div class="cover-footer">
+        <span id="coverNo">NO. 22-07-06</span>
+        <span>POSTED BY ZHOUCI</span>
+      </div>
     </div>
-    <h1 class="cover-title">这封信会在你需要的时候找到你</h1>
-    <p class="cover-hint">— 轻触，打开 —</p>
   </div>
 
-  <!-- Envelope Opening Animation Overlay -->
+  <!-- ======== OPENING ANIMATION ======== -->
   <div class="envelope-overlay" id="envelopeOverlay">
     <div class="opening-envelope">
-      <div class="envelope-body">
-        <img src="assets/envelope_cover_1024x1024.jpg" alt="信封">
+      <div class="env-body">
+        <span>CONFIDENTIAL</span>
       </div>
-      <div class="envelope-flap"></div>
+      <div class="env-flap"></div>
       <div class="letter-slide">
         <span>致正在读信的你</span>
       </div>
     </div>
   </div>
 
-  <!-- Letter Content Section -->
+  <!-- ======== LETTER CONTENT ======== -->
   <div class="letter-section" id="letterSection">
     <div class="letter-paper">
-      <p class="letter-greeting">亲爱的你：</p>
-      <div class="letter-body">
-        <p>我不知道你是谁，也不知道你现在正经历着什么。但既然这封信找到了你，那说明，此刻的你，大概需要听一些话。</p>
-        <p>先跟你说一声，辛苦了。不是那种客套的"辛苦了"，是真的、从心底里觉得——你撑到现在，真的很了不起。这个世界有时候蛮不讲理的，它不会因为你善良就对你温柔，也不会因为你努力就给你回报。但你还是撑过来了，不是吗？</p>
-        <p>二十二岁的我，有时候觉得自己什么都懂，有时候又觉得自己什么都不懂。我学会了在别人面前笑得得体，也学会了在深夜里独自消化那些说不出口的委屈。你大概也是这样吧？明明心里翻江倒海，表面上还要云淡风轻。</p>
-        <p>我跟你说，不要觉得这样很虚伪。这叫成长。真正的强大，不是你从来不哭，而是你哭完了，擦干眼泪，第二天照样能把自己收拾得漂漂亮亮，继续往前走。这一点，你做得比你以为的好太多了。</p>
-        <p>有些人会告诉你"想开一点"，好像你的痛苦只是因为不够豁达。别听他们的。你的感受是真实的，你不需要为"不够坚强"而抱歉。允许自己难过，允许自己脆弱，允许自己在某些时刻什么都不做——这不叫放弃，这叫善待自己。</p>
-        <p>我以前总觉得，要变成更好的人，才能被喜欢。后来我才明白，你不需要变成任何人，你现在的样子，就已经值得被好好对待了。那些让你觉得自己不够好的人，是他们不配，不是你的问题。记住这句话，下次再有人让你自我怀疑的时候，拿出来默念三遍。</p>
-        <p>人生嘛，说到底就是一场漫长的自我和解。你会在某个瞬间突然释怀一些事，也会在某个深夜突然被一些小事击中。都没关系。允许自己慢慢来，没有人规定你必须在什么年纪活成什么样子。</p>
-        <p>最后想跟你说——不管你现在身处什么样的境遇，请相信，一切都会过去的。好的会来，坏的也会走。而你，会一直在。你比你想象中更有力量，也比你以为的更被爱着。</p>
-        <p>好好吃饭，好好睡觉，好好爱自己。这听起来很简单，但真正做到，就已经赢了大多数人。</p>
-        <p>愿你被这个世界温柔以待。如果暂时没有，那就自己温柔地对待自己。</p>
-      </div>
-      <div class="letter-signature">周慈</div>
-      <div class="letter-date">写于某个想你的夜晚</div>
+      <svg class="lace-corner" style="top:14px;left:14px;" viewBox="0 0 56 56" fill="none">
+        <path d="M2 2L2 28Q2 2 28 2Z" stroke="#6b6560" stroke-width="0.8" fill="none"/>
+        <circle cx="9" cy="9" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="18" cy="9" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="9" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="9" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="18" cy="18" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="27" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="9" cy="27" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="18" cy="27" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="27" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+      </svg>
+      <svg class="lace-corner" style="top:14px;right:14px;transform:scaleX(-1);" viewBox="0 0 56 56" fill="none">
+        <path d="M2 2L2 28Q2 2 28 2Z" stroke="#6b6560" stroke-width="0.8" fill="none"/>
+        <circle cx="9" cy="9" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="18" cy="9" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="9" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="9" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="18" cy="18" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="27" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="9" cy="27" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="18" cy="27" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="27" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+      </svg>
+      <svg class="lace-corner" style="bottom:14px;left:14px;transform:scaleY(-1);" viewBox="0 0 56 56" fill="none">
+        <path d="M2 2L2 28Q2 2 28 2Z" stroke="#6b6560" stroke-width="0.8" fill="none"/>
+        <circle cx="9" cy="9" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="18" cy="9" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="9" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="9" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="18" cy="18" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="27" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="9" cy="27" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="18" cy="27" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="27" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+      </svg>
+      <svg class="lace-corner" style="bottom:14px;right:14px;transform:scale(-1,-1);" viewBox="0 0 56 56" fill="none">
+        <path d="M2 2L2 28Q2 2 28 2Z" stroke="#6b6560" stroke-width="0.8" fill="none"/>
+        <circle cx="9" cy="9" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="18" cy="9" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="9" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="9" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="18" cy="18" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+        <circle cx="27" cy="18" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="9" cy="27" r="1.2" fill="none" stroke="#6b6560" stroke-width=".4"/>
+        <circle cx="18" cy="27" r="1.6" fill="none" stroke="#6b6560" stroke-width=".5"/>
+        <circle cx="27" cy="27" r="2.2" fill="none" stroke="#6b6560" stroke-width=".6"/>
+      </svg>
+
+      <p class="letter-greeting" id="letterGreeting">亲爱的你：</p>
+      <div class="letter-body" id="letterBody"></div>
+      <div class="letter-signature" id="letterSignature">周慈</div>
+      <div class="letter-date" id="letterDate"></div>
+    </div>
+
+    <div class="back-btn-wrap" id="backBtnWrap">
+      <button class="back-btn" onclick="goBack(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        再拆一封
+      </button>
     </div>
   </div>
 
-  <script>
-    function openLetter() {
-      var cover = document.getElementById('coverSection');
-      var overlay = document.getElementById('envelopeOverlay');
-      var letter = document.getElementById('letterSection');
+  <!-- ======== WRITE TO ZHOUCI ======== -->
+  <div class="write-section" id="writeSection">
+    <div class="glass-card">
+      <h2 class="section-title">给周慈写信</h2>
+      <p class="section-desc">写点什么吧，她会看到的。</p>
+      <textarea id="writeInput" placeholder="亲爱的周慈，我想跟你说..." rows="6"></textarea>
+      <div class="write-actions">
+        <button class="glass-btn" onclick="sendLetter()">寄出</button>
+      </div>
+      <div class="write-sent" id="writeSent" style="display:none;">
+        <p>你的信已寄出。周慈会认真读的。</p>
+      </div>
+    </div>
+  </div>
 
-      // Show envelope opening animation
-      overlay.classList.add('active');
+  <!-- ======== DRIFT BOTTLE ======== -->
+  <div class="bottle-section" id="bottleSection">
+    <div class="glass-card">
+      <h2 class="section-title">漂流瓶</h2>
+      <p class="section-desc">把心事装进瓶子，漂给陌生人。</p>
 
-      // After animation completes, fade out overlay and show letter
-      setTimeout(function() {
-        overlay.classList.add('fadeout');
-        cover.classList.add('hidden');
-        letter.classList.add('visible');
-      }, 2800);
+      <!-- Flowing river animation -->
+      <div class="river-scene">
+        <div class="river-water">
+          <div class="river-wave river-wave-1"></div>
+          <div class="river-wave river-wave-2"></div>
+          <div class="river-wave river-wave-3"></div>
+        </div>
+        <div class="river-surface">
+          <div class="river-sparkle r-sparkle-1"></div>
+          <div class="river-sparkle r-sparkle-2"></div>
+          <div class="river-sparkle r-sparkle-3"></div>
+          <div class="river-sparkle r-sparkle-4"></div>
+          <div class="river-sparkle r-sparkle-5"></div>
+        </div>
+        <!-- Floating bottles -->
+        <div class="river-bottles">
+          <div class="mini-bottle mb-1">
+            <svg viewBox="0 0 24 32" fill="none"><path d="M8 0h8v6l4 6v14a6 6 0 01-6 6h-8a6 6 0 01-6-6V12l4-6V0z" fill="rgba(255,255,255,0.35)" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/><rect x="9" y="2" width="6" height="3" rx="1" fill="rgba(255,255,255,0.25)"/></svg>
+          </div>
+          <div class="mini-bottle mb-2">
+            <svg viewBox="0 0 24 32" fill="none"><path d="M8 0h8v6l4 6v14a6 6 0 01-6 6h-8a6 6 0 01-6-6V12l4-6V0z" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.45)" stroke-width="0.8"/><rect x="9" y="2" width="6" height="3" rx="1" fill="rgba(255,255,255,0.2)"/></svg>
+          </div>
+          <div class="mini-bottle mb-3">
+            <svg viewBox="0 0 24 32" fill="none"><path d="M8 0h8v6l4 6v14a6 6 0 01-6 6h-8a6 6 0 01-6-6V12l4-6V0z" fill="rgba(255,255,255,0.28)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/><rect x="9" y="2" width="6" height="3" rx="1" fill="rgba(255,255,255,0.18)"/></svg>
+          </div>
+        </div>
+      </div>
 
-      // Remove overlay from DOM after fade
-      setTimeout(function() {
-        overlay.style.display = 'none';
-      }, 4000);
-    }
-  </script>
+      <div class="bottle-actions">
+        <button class="glass-btn bottle-throw" onclick="throwBottle()">扔一个瓶子</button>
+        <button class="glass-btn bottle-pick" onclick="pickBottle()">捡一个瓶子</button>
+      </div>
+      <div class="bottle-content" id="bottleContent" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ======== MUSIC PLAYER ======== -->
+  <div class="music-player" id="musicPlayer">
+    <div class="music-bar" onclick="toggleMusic()">
+      <span class="music-icon">♫</span>
+      <span class="music-label">治愈电台</span>
+      <span class="music-toggle" id="musicToggle">展开</span>
+    </div>
+    <div class="music-iframe-wrap" id="musicIframeWrap">
+      <iframe id="musicIframe" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=52 src="//music.163.com/outchain/player?type=0&id=280731&auto=0&height=32"></iframe>
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=52 src="//music.163.com/outchain/player?type=0&id=205342&auto=0&height=32"></iframe>
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=52 src="//music.163.com/outchain/player?type=0&id=2001330167&auto=0&height=32"></iframe>
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=52 src="//music.163.com/outchain/player?type=0&id=26211167&auto=0&height=32"></iframe>
+    </div>
+    <div class="music-import" id="musicImport">
+      <div class="music-import-row">
+        <input type="text" id="musicUrlInput" class="music-url-input" placeholder="粘贴网易云音乐歌单/歌曲链接" />
+        <button class="glass-btn music-import-btn" onclick="importMusic()">导入</button>
+      </div>
+      <p class="music-import-hint" id="musicImportHint"></p>
+    </div>
+  </div>
+
+  <!-- ======== BOTTOM NAV ======== -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-item active" data-tab="cover" onclick="switchTab('cover')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 7L12 14L22 7"/></svg>
+      <span>信箱</span>
+    </button>
+    <button class="nav-item" data-tab="write" onclick="switchTab('write')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2z"/><path d="M12 8v8M9 11h6"/></svg>
+      <span>写信</span>
+    </button>
+    <button class="nav-item" data-tab="bottle" onclick="switchTab('bottle')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8 2 4 6 4 10c0 4 8 12 8 12s8-8 8-12c0-4-4-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>漂流瓶</span>
+    </button>
+    <button class="nav-item" data-tab="music" onclick="toggleMusic()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>音乐</span>
+    </button>
+  </nav>
+
+  <script src="assets/letter-generator.js"></script>
+  <script src="assets/audio-engine.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/app.js"></script>
 </body>
 </html>
